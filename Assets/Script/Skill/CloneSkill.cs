@@ -15,6 +15,7 @@ public class CloneSkill : Skill
 
     [SerializeField] private bool createCloneOnDashStart;
     [SerializeField] private bool createCloneOnDashOver;
+    [SerializeField] private bool createCloneOnCounterAttack;
 
    public void CreateClone(Transform _clonePosition, Vector3 _offset)
     {
@@ -35,5 +36,20 @@ public class CloneSkill : Skill
         {
             CreateClone(player.transform, Vector3.zero);
         }
+    }
+
+    public void CreateCloneOnCounterAttack(Transform _enemyTransform)
+    {
+           if(createCloneOnCounterAttack)
+        {
+            StartCoroutine(CreateCloneWithDelay(_enemyTransform, new Vector3(2 * player.facingDir, 0)));
+        }
+    }
+
+    private IEnumerator CreateCloneWithDelay(Transform _transform, Vector3 _offset)
+    {
+        yield return new WaitForSeconds(0.4f);
+
+            CreateClone(_transform, _offset);
     }
 }
