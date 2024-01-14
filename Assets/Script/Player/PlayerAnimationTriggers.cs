@@ -25,7 +25,6 @@ public class PlayerAnimationTriggers : MonoBehaviour
 
 
 
-               // hit.GetComponent<Enemy>().Damage();
               
             }
         }

@@ -23,7 +23,7 @@ public class SkeletonAnimationTriggers : MonoBehaviour
                 PlayerStats target = hit.GetComponent<PlayerStats>();
                 enemy.stats.DoDamge(target);
 
-                //hit.GetComponent<Player>().Damage();
+            
             }
         }
     }
