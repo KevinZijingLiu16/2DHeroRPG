@@ -4,6 +4,19 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
+    #region Components
+    public Animator anim { get; private set; }
+    public Rigidbody2D rb { get; private set; }
+    public EntityFlash fx { get; private set; }
+
+    public SpriteRenderer sr { get; private set; }
+
+    public CharacterStats stats { get; private set; }
+
+    public CapsuleCollider2D cd { get; private set; }
+
+    #endregion
+
     [Header("Collision Settings")]
     public Transform attackCheck;
     public float attackCheckRadius;
@@ -24,19 +37,9 @@ public class Entity : MonoBehaviour
     public int facingDir { get; private set; } = 1;
     protected bool facingRight = true;
 
+    public System.Action onFlipped;
 
-    #region Components
-    public Animator anim { get; private set; }
-    public Rigidbody2D rb { get; private set; }
-    public EntityFlash fx { get; private set; }
 
-    public SpriteRenderer sr { get; private set; }
-
-    public CharacterStats stats { get; private set; }
-
-    public CapsuleCollider2D cd { get; private set; }
-
-    #endregion
 
 
     protected virtual void Awake()
@@ -113,6 +116,13 @@ public class Entity : MonoBehaviour
         facingDir = facingDir * -1;
         facingRight = !facingRight;
         transform.Rotate(0f, 180f, 0f);
+
+
+        if (onFlipped != null)
+        {
+          onFlipped();
+
+        }
     }
 
     public virtual void FlipController(float _x)
