@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
+    private EntityFlash fx;
+
+
     [Header("Major Stats")]
     public Stats strength; // 1 point increase 1 damage and crit power by 1%
     public Stats agility; //1 point increase 1 evasion and crit chance by 1%
@@ -35,7 +38,7 @@ public class CharacterStats : MonoBehaviour
     public bool isChiiled; // decrease movement speed, decrese armor
     public bool isShocked; // reduce accuracy.
 
-
+    [SerializeField] private float alimentDuration = 4f;
     private float ignitedTimer;
     private float chilledTimer;
     private float shockedTimer;
@@ -63,7 +66,7 @@ public class CharacterStats : MonoBehaviour
         critPower.SetDefaultValue(150);
         currentHealth = GetMaxHealthValue();
 
-
+        fx = GetComponent<EntityFlash>();
         
     }
 
@@ -211,19 +214,25 @@ public class CharacterStats : MonoBehaviour
         if (_ignited)
         {
             isIgnited = _chilled;
-            ignitedTimer = 2f;
+            ignitedTimer = alimentDuration;
+
+            fx.IgniteFxFor(alimentDuration);
         }
 
         if (_chilled)
         {
             isChiiled = _chilled;
-            chilledTimer = 2f;
+            chilledTimer = alimentDuration;
+
+            fx.ChillFxFor(alimentDuration * 2f);
         }
 
         if (_shocked)
         {
             isShocked = _shocked;
-            shockedTimer = 2f;
+            shockedTimer = alimentDuration;
+
+            fx.ShockFxFor(alimentDuration);
         }
         isIgnited = _ignited;
         isChiiled = _chilled;
