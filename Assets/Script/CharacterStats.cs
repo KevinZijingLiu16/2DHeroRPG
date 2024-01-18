@@ -47,7 +47,8 @@ public class CharacterStats : MonoBehaviour
     private float igniteDamageCooldown = 0.3f;
     private float igniteDamageTimer;
     private int igniteDamage;
-
+    private int shockDamage;
+    [SerializeField] private GameObject shockStrikePrefab;
 
 
 
@@ -191,6 +192,11 @@ public class CharacterStats : MonoBehaviour
             _targetStats.SetupIgniteDamage(Mathf.RoundToInt(_fireDamage * 0.2f));
         }
 
+        if (canApplyShock)
+        {
+            _targetStats.SetupShockDamage(Mathf.RoundToInt(_lightningDamage * 0.1f));
+        }
+
         _targetStats.ApplyAilments(canApplyIgnite, canApplyChill, canApplyShock);
 
 
@@ -206,12 +212,11 @@ public class CharacterStats : MonoBehaviour
 
     public void ApplyAilments(bool _ignited, bool _chilled, bool _shocked)
     {
-        if(isIgnited || isChiiled || isShocked)
-        {
-            return;
-        }
+       bool canApplyIgnite = !isIgnited && !isChiiled && !isShocked;
+        bool canApplyChill = !isIgnited && !isChiiled && !isShocked;
+        bool canApplyShock = !isIgnited && !isChiiled;
 
-        if (_ignited)
+        if (_ignited && canApplyIgnite)
         {
             isIgnited = _chilled;
             ignitedTimer = alimentDuration;
@@ -219,7 +224,7 @@ public class CharacterStats : MonoBehaviour
             fx.IgniteFxFor(alimentDuration);
         }
 
-        if (_chilled)
+        if (_chilled && canApplyChill)
         {
             isChiiled = _chilled;
             chilledTimer = alimentDuration;
@@ -230,21 +235,90 @@ public class CharacterStats : MonoBehaviour
             fx.ChillFxFor(alimentDuration * 2f);
         }
 
-        if (_shocked)
+        if (_shocked && canApplyShock)
         {
-            isShocked = _shocked;
-            shockedTimer = alimentDuration;
+            if (!isShocked)
+            {
+                ApplyShock(_shocked);
 
-            fx.ShockFxFor(alimentDuration);
+            }
+
+            else
+            {
+                if (GetComponent<Player>() != null)
+                {
+                    return;
+                }
+
+                HitNearestTargetWithStrike();
+
+            }
+
+
+
+            //find the nearest enemy and attack it.
+            //initiate thunder strike
+
         }
         isIgnited = _ignited;
         isChiiled = _chilled;
         isShocked = _shocked;
     }
 
+    public void ApplyShock(bool _shocked)
+    {
+        if(isShocked)
+        {
+            return;
+        }
+
+
+        isShocked = _shocked;
+        shockedTimer = alimentDuration;
+
+        fx.ShockFxFor(alimentDuration);
+    }
+
+    private void HitNearestTargetWithStrike()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 25f);
+
+        float closestDistance = Mathf.Infinity;
+
+        Transform closestEnemy = null;
+        foreach (var hit in colliders)
+        {
+            if (hit.GetComponent<Enemy>() != null && Vector2.Distance(transform.position, hit.transform.position) > 1)
+            {
+                float distanceToEnemy = Vector2.Distance(transform.position, hit.transform.position);
+                if (distanceToEnemy < closestDistance)
+                {
+                    closestDistance = distanceToEnemy;
+                    closestEnemy = hit.transform;
+                }
+
+            }
+            if (closestEnemy == null)
+            {
+                closestEnemy = transform;
+            }
+        }
+
+        if (closestEnemy != null)
+        {
+            GameObject newShockStrike = Instantiate(shockStrikePrefab, transform.position, Quaternion.identity);
+            newShockStrike.GetComponent<ShockStrikeController>().Setup(shockDamage, closestEnemy.GetComponent<CharacterStats>());
+        }
+    }
+
     public void SetupIgniteDamage(int _damage)
     {
         igniteDamage = _damage;
+    }
+
+    public void SetupShockDamage(int _damage)
+    {
+        shockDamage = _damage;
     }
 
     public virtual void TakeDamage(int _damage)

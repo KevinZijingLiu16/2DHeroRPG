@@ -273,10 +273,10 @@ TextureImporter:
       name: Thunder_7
       rect:
         serializedVersion: 2
-        x: 448
-        y: 0
-        width: 64
-        height: 256
+        x: 451
+        y: 2
+        width: 61
+        height: 253
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -284,8 +284,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 79db7985d930df449b79e41ed3860a1f
-      internalID: 2081559142
+      spriteID: a378cffd20f45b84d8e440815dfcc9c4
+      internalID: -1743277620
       vertices: []
       indices: 
       edges: []
@@ -308,7 +308,7 @@ TextureImporter:
       Thunder_4: 2018676594
       Thunder_5: 726128666
       Thunder_6: -780843138
-      Thunder_7: 2081559142
+      Thunder_7: -1743277620
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
